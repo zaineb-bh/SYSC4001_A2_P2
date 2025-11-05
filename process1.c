@@ -2,6 +2,7 @@
 #include <unistd.h>  
 #include <sys/types.h>
 #include <stdlib.h>
+#include <sys/wait.h>
 
 
 int main()
@@ -10,16 +11,15 @@ int main()
     pid_t pid1;
     /* fork a child process */
     pid = fork();
-
+    int status;
 
     if (pid < 0) { /* error occurred */
         fprintf(stderr, "Fork Failed");
         return 1;
     }
 
-
     else if (pid == 0) { /* child process */
-        execl("./process2", "process2", NULL); 
+        execl("./process2", "process2", NULL);
         perror("execl failed");
         exit(1);
     }    
@@ -27,9 +27,13 @@ int main()
     else { /* parent process */
         int counter = 0;
         pid1 = getpid();
+
         while(1){
-            counter++;
-            if (counter % 3 == 0){
+            if (waitpid(pid, &status, WNOHANG) != 0) {
+                printf("Process 1 Exiting: Process 2 has finished.\n");
+                break;
+            }
+            else if (counter % 3 == 0){
                 printf("Process 1 Cycle number: %d - %d is a multiple of 3\n", counter, counter); /* C */
                 sleep(1);
             }
@@ -37,6 +41,8 @@ int main()
                 printf("Process 1 Cycle number: %d\n", counter);
                 sleep(1);
             }
+            counter++;
+           
         }
     return 0;
     }
