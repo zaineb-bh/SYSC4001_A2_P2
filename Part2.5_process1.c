@@ -29,7 +29,7 @@ union semun {
 int sem_wait_op(int semid) {
     struct sembuf op;
     op.sem_num = 0;
-    op.sem_op = -1; /* P */
+    op.sem_op = -1; 
     op.sem_flg = 0;
     return semop(semid, &op, 1);
 }
@@ -37,7 +37,7 @@ int sem_wait_op(int semid) {
 int sem_post_op(int semid) {
     struct sembuf op;
     op.sem_num = 0;
-    op.sem_op = 1; /* V */
+    op.sem_op = 1; 
     op.sem_flg = 0;
     return semop(semid, &op, 1);
 }
